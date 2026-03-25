@@ -202,6 +202,12 @@ window.onload = () => {
         else if (val >= 90) display.textContent = translations[currentLang].usageWeapons;
     });
 
+    document.getElementById("lang").addEventListener("change", (e) => {
+        currentLang = e.target.value;
+        localStorage.setItem("lang", currentLang);
+        updateUI();
+    });
+
     document.addEventListener('click', (e) => {
         if(e.target.closest('button') || e.target.closest('.box') || e.target.closest('select')) {
             playSound('click');
@@ -213,10 +219,17 @@ window.onload = () => {
             highestLevel = 1; saveProgress(); updateUI();
         }
     };
+    checkResetBtnVisibility();
 };
 
 function saveProgress() {
     localStorage.setItem("highestLevel", highestLevel);
+    checkResetBtnVisibility();
+}
+
+function checkResetBtnVisibility() {
+    const btn = document.getElementById("resetProgressBtn");
+    if (highestLevel >= 5) btn.style.display = "none";
 }
 
 function initSelectOptions() {
@@ -257,6 +270,7 @@ function updateUI() {
         if (translations[currentLang][key]) el.textContent = translations[currentLang][key];
     });
     document.body.dir = currentLang === "ar" ? "rtl" : "ltr";
+    document.getElementById("lang").value = currentLang;
     
     const levelView = document.getElementById("levelView");
     if(levelView && levelView.classList.contains("show")) {
@@ -287,9 +301,9 @@ function renderLevels() {
     if(!list) return; list.innerHTML = "";
     translations[currentLang].levelNames.forEach((name, i) => {
         const div = document.createElement("div");
-        div.className = `box ${i + 1 > highestLevel ? 'locked' : ''}`;
+        div.className = `box ${i + 1 > highestLevel && highestLevel < 5 ? 'locked' : ''}`;
         div.style.margin = "10px"; div.textContent = name;
-        div.onclick = () => (i + 1 <= highestLevel) && openLevel(i);
+        div.onclick = () => (i + 1 <= highestLevel || highestLevel >= 5) && openLevel(i);
         list.appendChild(div);
     });
 }
@@ -674,3 +688,4 @@ document.querySelectorAll(".box[id*='SettingsBtn']").forEach(btn => {
 function closeAllMenus() { document.querySelectorAll(".settings-menu").forEach(m => m.style.display = "none"); }
 window.onclick = closeAllMenus;
 document.getElementById("start").onclick = () => showScreen("mythsApp");
+
