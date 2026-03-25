@@ -448,8 +448,8 @@ function setupCriticalLevel() {
             const ball = document.createElement("div"); ball.className = "critical-ball"; ball.textContent = "U235";
             let col = i % columns;
             let row = Math.floor(i / columns);
-            ball.style.left = (20 + col * 30) + "%"; 
-            ball.style.top = (10 + row * 10) + "%";
+            ball.style.left = (15 + col * 30 + (Math.random() * 10 - 5)) + "%"; 
+            ball.style.top = (5 + row * 10 + (Math.random() * 5 - 2.5)) + "%";
             area.appendChild(ball);
         }
     });
@@ -632,6 +632,7 @@ function showEvaluation() {
     document.getElementById("scoreCircle").style.strokeDashoffset = 283 - (283 * score) / 100;
     const isWin = score >= 50;
     document.getElementById("evalMessage").textContent = isWin ? translations[currentLang].congrats + " 🥳✨" : translations[currentLang].pity + " 🥺💔";
+    document.getElementById("suggestionLabel").style.display = isWin ? "block" : "none";
     document.getElementById("suggestionText").style.display = isWin ? "block" : "none";
     document.getElementById("suggestionBtn").style.display = isWin ? "block" : "none";
     document.getElementById("retryLevelBtn").style.display = isWin ? "none" : "block";
@@ -682,7 +683,10 @@ function toggleTheme() {
     applyTheme(document.body.classList.contains("day") ? "night" : "day"); 
     if(activeLevel === 4) resetConstLab(); 
     if(document.getElementById("evaluationLab").classList.contains("show")) {
-        document.getElementById("evaluationLab").className = `evaluation-container ${document.body.classList.contains('day') ? 'day' : 'night'}`;
+        const evalLab = document.getElementById("evaluationLab");
+        evalLab.style.display = "flex";
+        evalLab.classList.add("show");
+        evalLab.className = `evaluation-container ${document.body.classList.contains('day') ? 'day' : 'night'} show`;
     }
 }
 function applyTheme(theme) { 
@@ -695,3 +699,4 @@ document.querySelectorAll(".box[id*='SettingsBtn']").forEach(btn => {
 function closeAllMenus() { document.querySelectorAll(".settings-menu").forEach(m => m.style.display = "none"); }
 window.onclick = closeAllMenus;
 document.getElementById("start").onclick = () => showScreen("mythsApp");
+
